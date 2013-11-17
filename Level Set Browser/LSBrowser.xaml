@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window
+	x:Class="Level_Set_Browser.LSBrowser" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:Level_Set_Browser"
+	Title="Level Set Browser"
+	Width="300"
+	Height="600"
+	MinWidth="200"
+	MinHeight="200"
+	Icon="Turok2.ico">
+	<Window.Resources>
+		<self:ProgressToPercentConverter
+			x:Key="ProgressToPercentConverter" />
+		<!--<Style x:Key="Highlight" TargetType="TextBlock">
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="LightBlue" />
+					<Setter Property="FontSize" Value="14" />
+				</Trigger>
+			</Style.Triggers>
+		</Style>-->
+	</Window.Resources>
+	<Window.CommandBindings>
+		<CommandBinding
+			Command="ApplicationCommands.Open"
+			Executed="Open_Executed"
+			CanExecute="CommandBinding_CanExecute" />
+		<CommandBinding
+			Command="ApplicationCommands.Save"
+			Executed="Save_Executed"
+			CanExecute="CommandBinding_CanExecute" />
+		<CommandBinding
+			Command="self:LSBrowserCommands.Close"
+			Executed="Close_Executed"
+			CanExecute="CommandBinding_CanExecute" />
+		<CommandBinding
+			Command="self:LSBrowserCommands.Exit"
+			Executed="Exit_Executed"
+			CanExecute="CommandBinding_CanExecute" />
+	</Window.CommandBindings>
+	<DockPanel>
+		<Menu
+			Name="LSMenu"
+			DockPanel.Dock="Top">
+			<MenuItem
+				Header="_File">
+				<MenuItem
+					Header="_Open"
+					Command="ApplicationCommands.Open" />
+				<MenuItem
+					Header="_Save"
+					Command="ApplicationCommands.Save" />
+				<MenuItem
+					Header="_Close"
+					Command="self:LSBrowserCommands.Close" />
+				<MenuItem
+					Header="E_xit"
+					Command="self:LSBrowserCommands.Exit" />
+			</MenuItem>
+			<MenuItem
+				Header="_Edit">
+				<MenuItem
+					Header="Undo" />
+				<MenuItem
+					Header="Redo" />
+				<MenuItem
+					Header="Cut" />
+				<MenuItem
+					Header="Copy" />
+				<MenuItem
+					Header="Paste" />
+				<MenuItem
+					Header="Delete" />
+			</MenuItem>
+			<MenuItem
+				Header="_View">
+				<MenuItem
+					Header="_Data" />
+				<MenuItem
+					Header="_Model" />
+			</MenuItem>
+			<MenuItem
+				Header="_Help">
+				<MenuItem
+					Header="No Help" />
+				<MenuItem
+					Header="Info" />
+			</MenuItem>
+		</Menu>
+		<StatusBar
+			Name="LSStatus"
+			DockPanel.Dock="Bottom">
+			<StatusBar.ItemContainerStyle>
+				<Style
+					TargetType="{x:Type StatusBarItem}">
+					<Setter
+						Property="HorizontalContentAlignment"
+						Value="Stretch" />
+				</Style>
+			</StatusBar.ItemContainerStyle>
+			<StatusBar.ItemsPanel>
+				<ItemsPanelTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition
+								Width="Auto" />
+							<ColumnDefinition
+								Width="Auto" />
+							<ColumnDefinition
+								Width="*" />
+							<ColumnDefinition
+								Width="Auto" />
+						</Grid.ColumnDefinitions>
+					</Grid>
+				</ItemsPanelTemplate>
+			</StatusBar.ItemsPanel>
+			<StatusBarItem
+				Grid.Column="0">
+				<TextBlock
+					Text="Status:"
+					Margin="2" />
+			</StatusBarItem>
+			<StatusBarItem
+				Grid.Column="1">
+				<TextBlock
+					Name="LSMessage"
+					Margin="2" />
+			</StatusBarItem>
+			<StatusBarItem
+				Grid.Column="2">
+				<ProgressBar
+					Name="LSProgress"
+					Height="16"
+					Margin="2" />
+			</StatusBarItem>
+			<StatusBarItem
+				Grid.Column="3">
+				<TextBlock
+					Name="LSProgAmt"
+					Margin="2" />
+			</StatusBarItem>
+		</StatusBar>
+		<TreeView
+			Name="LSTree"
+			TreeViewItem.Expanded="LSTree_Expanded"
+			TreeViewItem.Collapsed="LSTree_Collapsed"
+			TreeViewItem.Selected="LSTree_Selected"
+			TreeViewItem.Unselected="LSTree_Unselected">
+			<TreeView.Resources>
+				<DataTemplate
+					DataType="{x:Type self:LSItem}">
+					<TextBlock
+						Text="{Binding Name}"></TextBlock>
+				</DataTemplate>
+				<DataTemplate
+					DataType="{x:Type self:LSDataBlock}">
+					<StackPanel
+						Orientation="Horizontal">
+						<TextBlock
+							KeyUp="DataBlock_KeyUp"
+							Text="{Binding Name}"
+							Foreground="Blue" >
+							<TextBlock.ContextMenu>
+								<ContextMenu>
+									<MenuItem
+										Header="Open" />
+									<MenuItem
+										Header="Delete" />
+								</ContextMenu>
+							</TextBlock.ContextMenu>
+						</TextBlock>
+						<TextBlock
+							Text=" - " />
+						<TextBlock
+							Text="{Binding Size}"
+							Foreground="Red"></TextBlock>
+						<TextBlock
+							Text=" bytes" />
+					</StackPanel>
+				</DataTemplate>
+				<HierarchicalDataTemplate
+					DataType="{x:Type self:LSSection}"
+					ItemsSource="{Binding Children}">
+					<StackPanel 
+						Orientation="Horizontal" >
+						<StackPanel.ToolTip>
+							<TextBlock Text="{Binding Path=Children.Count}" />
+						</StackPanel.ToolTip>
+						<TextBlock
+							Text="{Binding Name}"
+							Foreground="Green" />
+						<TextBlock
+							Text=" - " />
+						<TextBlock
+							Text="{Binding Size}"
+							Foreground="Red" />
+						<TextBlock
+							Text=" bytes" />
+					</StackPanel>
+				</HierarchicalDataTemplate>
+			</TreeView.Resources>
+			<TreeView.ItemContainerStyle>
+				<Style
+					TargetType="TreeViewItem">
+					<Setter
+						Property="IsExpanded"
+						Value="{Binding Expanded}" />
+					<Setter
+						Property="IsSelected"
+						Value="{Binding Selected}" />
+				</Style>
+			</TreeView.ItemContainerStyle>
+		</TreeView>
+	</DockPanel>
+</Window>

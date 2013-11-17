@@ -1,0 +1,8 @@
+<Application x:Class="Level_Set_Browser.App"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Startup="LSStartup" >
+	<Application.Resources>
+		
+	</Application.Resources>
+</Application>
